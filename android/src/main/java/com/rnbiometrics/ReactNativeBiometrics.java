@@ -147,7 +147,7 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
                         @Override
                         public void run() {
                             try {
-                                String cancelButtomText = params.getString("cancelButtonText");
+                                String cancelButtonText = params.getString("cancelButtonText");
                                 String promptMessage = params.getString("promptMessage");
                                 String payload = params.getString("payload");
 
@@ -168,7 +168,7 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
                                 PromptInfo promptInfo = new PromptInfo.Builder()
                                         .setDeviceCredentialAllowed(false)
                                         .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK| BiometricManager.Authenticators.BIOMETRIC_STRONG)
-                                        .setNegativeButtonText(cancelButtomText)
+                                        .setNegativeButtonText(cancelButtonText)
                                         .setTitle(promptMessage)
                                         .build();
                                 biometricPrompt.authenticate(promptInfo, cryptoObject);
@@ -200,6 +200,7 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
 
                                 PromptInfo promptInfo = new PromptInfo.Builder()
                                         .setDeviceCredentialAllowed(false)
+                                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK| BiometricManager.Authenticators.BIOMETRIC_STRONG)
                                         .setNegativeButtonText(cancelButtomText)
                                         .setTitle(promptMessage)
                                         .build();
