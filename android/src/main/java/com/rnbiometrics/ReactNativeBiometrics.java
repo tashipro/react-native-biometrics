@@ -141,78 +141,73 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void createSignature(final ReadableMap params, final Promise promise) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            UiThreadUtil.runOnUiThread(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String cancelButtonText = params.getString("cancelButtonText");
-                                String promptMessage = params.getString("promptMessage");
-                                String payload = params.getString("payload");
+        UiThreadUtil.runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String cancelButtonText = params.getString("cancelButtonText");
+                            String promptMessage = params.getString("promptMessage");
+                            String payload = params.getString("payload");
 
-                                Signature signature = Signature.getInstance("SHA256withRSA");
-                                KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-                                keyStore.load(null);
+                            Signature signature = Signature.getInstance("SHA256withRSA");
+                            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+                            keyStore.load(null);
 
-                                PrivateKey privateKey = (PrivateKey) keyStore.getKey(biometricKeyAlias, null);
-                                signature.initSign(privateKey);
+                            PrivateKey privateKey = (PrivateKey) keyStore.getKey(biometricKeyAlias, null);
+                            signature.initSign(privateKey);
 
-                                BiometricPrompt.CryptoObject cryptoObject = new BiometricPrompt.CryptoObject(signature);
+                            BiometricPrompt.CryptoObject cryptoObject = new BiometricPrompt.CryptoObject(signature);
 
-                                AuthenticationCallback authCallback = new CreateSignatureCallback(promise, payload);
-                                FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
-                                Executor executor = Executors.newSingleThreadExecutor();
-                                BiometricPrompt biometricPrompt = new BiometricPrompt(fragmentActivity, executor, authCallback);
+                            AuthenticationCallback authCallback = new CreateSignatureCallback(promise, payload);
+                            FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
+                            Executor executor = Executors.newSingleThreadExecutor();
+                            BiometricPrompt biometricPrompt = new BiometricPrompt(fragmentActivity, executor, authCallback);
 
-                                PromptInfo promptInfo = new PromptInfo.Builder()
-                                        .setDeviceCredentialAllowed(false)
-                                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK| BiometricManager.Authenticators.BIOMETRIC_STRONG)
-                                        .setNegativeButtonText(cancelButtonText)
-                                        .setTitle(promptMessage)
-                                        .build();
-                                biometricPrompt.authenticate(promptInfo, cryptoObject);
-                            } catch (Exception e) {
-                                promise.reject("Error signing payload: " + e.getMessage(), "Error generating signature: " + e.getMessage());
-                            }
+                            PromptInfo promptInfo = new PromptInfo.Builder()
+                                    .setDeviceCredentialAllowed(false)
+                                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                                    .setNegativeButtonText(cancelButtonText)
+                                    .setTitle(promptMessage)
+                                    .build();
+                            biometricPrompt.authenticate(promptInfo, cryptoObject);
+                        } catch (Exception e) {
+                            promise.reject("Error signing payload: " + e.getMessage(), "Error generating signature: " + e.getMessage());
                         }
-                    });
-        } else {
-            promise.reject("Cannot generate keys on android versions below 6.0", "Cannot generate keys on android versions below 6.0");
-        }
+                    }
+                });
+        
     }
 
     @ReactMethod
     public void simplePrompt(final ReadableMap params, final Promise promise) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            UiThreadUtil.runOnUiThread(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String cancelButtomText = params.getString("cancelButtonText");
-                                String promptMessage = params.getString("promptMessage");
 
-                                AuthenticationCallback authCallback = new SimplePromptCallback(promise);
-                                FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
-                                Executor executor = Executors.newSingleThreadExecutor();
-                                BiometricPrompt biometricPrompt = new BiometricPrompt(fragmentActivity, executor, authCallback);
+        UiThreadUtil.runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String cancelButtonText = params.getString("cancelButtonText");
+                            String promptMessage = params.getString("promptMessage");
 
-                                PromptInfo promptInfo = new PromptInfo.Builder()
-                                        .setDeviceCredentialAllowed(false)
-                                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK| BiometricManager.Authenticators.BIOMETRIC_STRONG)
-                                        .setNegativeButtonText(cancelButtomText)
-                                        .setTitle(promptMessage)
-                                        .build();
-                                biometricPrompt.authenticate(promptInfo);
-                            } catch (Exception e) {
-                                promise.reject("Error displaying local biometric prompt: " + e.getMessage(), "Error displaying local biometric prompt: " + e.getMessage());
-                            }
+                            AuthenticationCallback authCallback = new SimplePromptCallback(promise);
+                            FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
+                            Executor executor = Executors.newSingleThreadExecutor();
+                            BiometricPrompt biometricPrompt = new BiometricPrompt(fragmentActivity, executor, authCallback);
+
+                            PromptInfo promptInfo = new PromptInfo.Builder()
+                                    .setDeviceCredentialAllowed(false)
+                                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                                    .setNegativeButtonText(cancelButtonText)
+                                    .setTitle(promptMessage)
+                                    .build();
+                            biometricPrompt.authenticate(promptInfo);
+                        } catch (Exception e) {
+                            promise.reject("Error displaying local biometric prompt: " + e.getMessage(), "Error displaying local biometric prompt: " + e.getMessage());
                         }
-                    });
-        } else {
-            promise.reject("Cannot display biometric prompt on android versions below 6.0", "Cannot display biometric prompt on android versions below 6.0");
-        }
+                    }
+                });
+
     }
 
     @ReactMethod
@@ -228,14 +223,14 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
     }
 
     protected boolean doesBiometricKeyExist() {
-      try {
-        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-        keyStore.load(null);
+        try {
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
 
-        return keyStore.containsAlias(biometricKeyAlias);
-      } catch (Exception e) {
-        return false;
-      }
+            return keyStore.containsAlias(biometricKeyAlias);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     protected boolean deleteBiometricKey() {
