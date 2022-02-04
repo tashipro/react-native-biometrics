@@ -167,6 +167,7 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
 
                                 PromptInfo promptInfo = new PromptInfo.Builder()
                                         .setDeviceCredentialAllowed(false)
+                                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK| BiometricManager.Authenticators.BIOMETRIC_STRONG)
                                         .setNegativeButtonText(cancelButtomText)
                                         .setTitle(promptMessage)
                                         .build();
