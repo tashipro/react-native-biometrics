@@ -176,12 +176,10 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
                         }
                     }
                 });
-        
     }
 
     @ReactMethod
     public void simplePrompt(final ReadableMap params, final Promise promise) {
-
         UiThreadUtil.runOnUiThread(
                 new Runnable() {
                     @Override
@@ -207,7 +205,6 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
                         }
                     }
                 });
-
     }
 
     @ReactMethod
