@@ -1,10 +1,8 @@
 package com.rnbiometrics;
 
-import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
-import android.util.Log;
 
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
@@ -139,7 +137,7 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
                             String cancelButtonText = params.getString("cancelButtonText");
                             String promptMessage = params.getString("promptMessage");
                             String payload = params.getString("payload");
-                            Boolean enableDeviceCredential = params.getBoolean("deviceCredential");
+                            boolean enableDeviceCredential = params.getBoolean("deviceCredential");
 
                             Signature signature = Signature.getInstance("SHA256withRSA");
                             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -185,10 +183,7 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
                         try {
                             String cancelButtonText = params.getString("cancelButtonText");
                             String promptMessage = params.getString("promptMessage");
-                            Log.i("**** Params : ", params.toString());
-                            Boolean enableDeviceCredential = params.getBoolean("deviceCredential");
-
-                            Log.i("**** Device credential enabled : ", String.valueOf(true));
+                            boolean enableDeviceCredential = params.getBoolean("deviceCredential");
 
                             AuthenticationCallback authCallback = new SimplePromptCallback(promise);
                             FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
