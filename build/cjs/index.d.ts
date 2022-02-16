@@ -35,6 +35,7 @@ interface CreateSignatureResult {
 
 interface SimplePromptOptions {
     promptMessage: string;
+    deviceCredential: string;
     cancelButtonText?: string;
 }
 

@@ -4,6 +4,7 @@ import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
@@ -187,19 +188,31 @@ public class ReactNativeBiometrics extends ReactContextBaseJavaModule {
                         try {
                             String cancelButtonText = params.getString("cancelButtonText");
                             String promptMessage = params.getString("promptMessage");
+                            Log.i("**** Params : ",params.toString());
+//                            Boolean enableDeviceCredential = params.getBoolean("enableDeviceCredential"); TODO
+
+                            Log.i("**** Device credential enabled : ", String.valueOf(true));
 
                             AuthenticationCallback authCallback = new SimplePromptCallback(promise);
                             FragmentActivity fragmentActivity = (FragmentActivity) getCurrentActivity();
                             Executor executor = Executors.newSingleThreadExecutor();
                             BiometricPrompt biometricPrompt = new BiometricPrompt(fragmentActivity, executor, authCallback);
 
-                            PromptInfo promptInfo = new PromptInfo.Builder()
-                                    .setDeviceCredentialAllowed(false)
-                                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.BIOMETRIC_STRONG)
-                                    .setNegativeButtonText(cancelButtonText)
-                                    .setTitle(promptMessage)
-                                    .build();
-                            biometricPrompt.authenticate(promptInfo);
+                            if(true){ // TODO: use enableDeviceCredential
+                                PromptInfo promptInfo = new PromptInfo.Builder()
+                                        .setAllowedAuthenticators(BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+                                        .setTitle(promptMessage)
+                                        .build();
+                                biometricPrompt.authenticate(promptInfo);
+                            }
+                            else{
+                                PromptInfo promptInfo = new PromptInfo.Builder()
+                                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK | BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                                        .setNegativeButtonText(cancelButtonText)
+                                        .setTitle(promptMessage)
+                                        .build();
+                                biometricPrompt.authenticate(promptInfo);
+                            }
                         } catch (Exception e) {
                             promise.reject("Error displaying local biometric prompt: " + e.getMessage(), "Error displaying local biometric prompt: " + e.getMessage());
                         }

@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 
 const { ReactNativeBiometrics: bridge } = NativeModules;
 
-/** 
+/**
  * Type alias for possible biometry types
  */
 export type BiometryType = 'TouchID' | 'FaceID' | 'Biometrics';
@@ -39,6 +39,7 @@ interface CreateSignatureResult {
 
 interface SimplePromptOptions {
     promptMessage: string
+    deviceCredential: boolean
     cancelButtonText?: string
 }
 
