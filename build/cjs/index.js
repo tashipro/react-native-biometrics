@@ -67,12 +67,16 @@ var ReactNativeBiometrics;
      * @param {Object} createSignatureOptions
      * @param {string} createSignatureOptions.promptMessage
      * @param {string} createSignatureOptions.payload
+     * @param {boolean} createSignatureOptions.deviceCredential
      * @param {string} createSignatureOptions.cancelButtonText (Android only)
      * @returns {Promise<Object>}  Promise that resolves to an object cryptographic signature details
      */
     function createSignature(createSignatureOptions) {
         if (!createSignatureOptions.cancelButtonText) {
             createSignatureOptions.cancelButtonText = 'Cancel';
+        }
+        if(!createSignatureOptions.deviceCredential){
+            createSignatureOptions.deviceCredential = false;
         }
         return bridge.createSignature(createSignatureOptions);
     }
@@ -85,12 +89,16 @@ var ReactNativeBiometrics;
      * object.success = false if the user cancels, and rejects if anything fails
      * @param {Object} simplePromptOptions
      * @param {string} simplePromptOptions.promptMessage
+     * @param {boolean} simplePromptOptions.deviceCredential
      * @param {string} simplePromptOptions.cancelButtonText (Android only)
      * @returns {Promise<Object>}  Promise that resolves an object with details about the biometrics result
      */
     function simplePrompt(simplePromptOptions) {
         if (!simplePromptOptions.cancelButtonText) {
             simplePromptOptions.cancelButtonText = 'Cancel';
+        }
+        if(!simplePromptOptions.deviceCredential){
+            simplePromptOptions.deviceCredential = false;
         }
         return bridge.simplePrompt(simplePromptOptions);
     }

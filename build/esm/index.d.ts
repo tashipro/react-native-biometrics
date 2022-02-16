@@ -23,6 +23,7 @@ interface DeleteKeysResult {
 
 interface CreateSignatureOptions {
     promptMessage: string;
+    deviceCredential?: boolean;
     payload: string;
     cancelButtonText?: string;
 }
