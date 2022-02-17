@@ -11,6 +11,7 @@ interface IsSensorAvailableResult {
     available: boolean
     biometryType?: BiometryType
     error?: string
+    code?: string
 }
 
 interface CreateKeysResult {

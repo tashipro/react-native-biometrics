@@ -28,10 +28,12 @@ RCT_EXPORT_METHOD(isSensorAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RC
 
     resolve(result);
   } else {
+    NSString *code = [NSString stringWithFormat:@"%li", (long)la_error.code];
     NSString *errorMessage = [NSString stringWithFormat:@"%@", la_error];
     NSDictionary *result = @{
       @"available": @(NO),
-      @"error": errorMessage
+      @"error": errorMessage,
+      @"code": code
     };
 
     resolve(result);
@@ -179,7 +181,7 @@ RCT_EXPORT_METHOD(simplePrompt: (NSDictionary *)params resolver:(RCTPromiseResol
               resolve(result);
             } else {
               NSString *code = [NSString stringWithFormat:@"%li", (long)biometricError.code];
-              NSString *message = [NSString stringWithFormat:@"%li", (long)biometricError.userInfo];
+              NSString *message = [NSString stringWithFormat:@"%@", biometricError];
               reject(code, message, nil);
             }
           }];
@@ -199,7 +201,7 @@ RCT_EXPORT_METHOD(simplePrompt: (NSDictionary *)params resolver:(RCTPromiseResol
               resolve(result);
             } else {
               NSString *code = [NSString stringWithFormat:@"%li", (long)biometricError.code];
-              NSString *message = [NSString stringWithFormat:@"%li", (long)biometricError.userInfo];
+              NSString *message = [NSString stringWithFormat:@"%@", biometricError];
               reject(code, message, nil);
             }
           }];
