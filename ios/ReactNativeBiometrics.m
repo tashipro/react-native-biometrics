@@ -17,7 +17,7 @@ RCT_EXPORT_METHOD(isSensorAvailable:(RCTPromiseResolveBlock)resolve rejecter:(RC
 {
   LAContext *context = [[LAContext alloc] init];
   NSError *la_error = nil;
-  BOOL canEvaluatePolicy = [context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:&la_error];
+  BOOL canEvaluatePolicy = [context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&la_error];
 
   if (canEvaluatePolicy) {
     NSString *biometryType = [self getBiometryType:context];
@@ -159,27 +159,51 @@ RCT_EXPORT_METHOD(createSignature: (NSDictionary *)params resolver:(RCTPromiseRe
 RCT_EXPORT_METHOD(simplePrompt: (NSDictionary *)params resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     NSString *promptMessage = [RCTConvert NSString:params[@"promptMessage"]];
+    BOOL useDeviceCredentials = [RCTConvert BOOL:params[@"deviceCredential"]];
 
     LAContext *context = [[LAContext alloc] init];
     context.localizedFallbackTitle = @"";
 
-    [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication localizedReason:promptMessage reply:^(BOOL success, NSError *biometricError) {
-      if (success) {
-        NSDictionary *result = @{
-          @"success": @(YES)
-        };
-        resolve(result);
-      } else if (biometricError.code == LAErrorUserCancel) {
-        NSDictionary *result = @{
-          @"success": @(NO),
-          @"error": @"User cancellation"
-        };
-        resolve(result);
-      } else {
-        NSString *message = [NSString stringWithFormat:@"%@", biometricError];
-        reject(@"biometric_error", message, nil);
+      if(useDeviceCredentials == true){
+          [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication localizedReason:promptMessage reply:^(BOOL success, NSError *biometricError) {
+            if (success) {
+              NSDictionary *result = @{
+                @"success": @(YES)
+              };
+              resolve(result);
+            } else if (biometricError.code == LAErrorUserCancel) {
+              NSDictionary *result = @{
+                @"success": @(NO),
+                @"error": @"User cancellation"
+              };
+              resolve(result);
+            } else {
+              NSString *code = [NSString stringWithFormat:@"%li", (long)biometricError.code];
+              NSString *message = [NSString stringWithFormat:@"%li", (long)biometricError.userInfo];
+              reject(code, message, nil);
+            }
+          }];
       }
-    }];
+      else{
+          [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:promptMessage reply:^(BOOL success, NSError *biometricError) {
+            if (success) {
+              NSDictionary *result = @{
+                @"success": @(YES)
+              };
+              resolve(result);
+            } else if (biometricError.code == LAErrorUserCancel) {
+              NSDictionary *result = @{
+                @"success": @(NO),
+                @"error": @"User cancellation"
+              };
+              resolve(result);
+            } else {
+              NSString *code = [NSString stringWithFormat:@"%li", (long)biometricError.code];
+              NSString *message = [NSString stringWithFormat:@"%li", (long)biometricError.userInfo];
+              reject(code, message, nil);
+            }
+          }];
+      }
   });
 }
 
